@@ -10,7 +10,7 @@ module Lieutenant
   autoload :CommandSender,  'lieutenant/command_sender'
   autoload :Config,         'lieutenant/config'
   autoload :Event,          'lieutenant/event'
-  autoload :EventPublisher, 'lieutenant/event_publisher'
+  autoload :EventBus,       'lieutenant/event_bus'
   autoload :EventStore,     'lieutenant/event_store'
   autoload :Exception,      'lieutenant/exception'
   autoload :Projection,     'lieutenant/projection'

@@ -21,7 +21,7 @@ module Lieutenant
         event.aggregate_id = aggregate_id
         event.sequence_number = sequence_number
         persist(event)
-        Lieutenant.config.event_publisher.publish(event)
+        Lieutenant.config.event_bus.publish(event)
         sequence_number + 1
       end
 

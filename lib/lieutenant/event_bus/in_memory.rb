@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Lieutenant
-  module EventPublisher
+  module EventBus
     class InMemory
       def handlers
         @handlers ||= Hash.new { [] }

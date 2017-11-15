@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Lieutenant
-  module Exception
+  class Exception
     class ConcurrencyConflict < Lieutenant::Exception
     end
   end

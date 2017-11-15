@@ -7,7 +7,7 @@ module Lieutenant
     def initialize
       @registrations = {
         command_sender: CommandSender.new,
-        event_publisher: EventPublisher::InMemory.new,
+        event_bus: EventBus::InMemory.new,
         event_store: EventStore::InMemory.new
       }
     end

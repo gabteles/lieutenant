@@ -18,7 +18,7 @@ module Lieutenant
       def aggregate_sequence_number(aggregate_id)
         return -1 unless store.key?(aggregate_id)
         last_event = store[aggregate_id].last
-        last_event ? last_event.version : -1
+        last_event ? last_event.sequence_number : -1
       end
 
       private

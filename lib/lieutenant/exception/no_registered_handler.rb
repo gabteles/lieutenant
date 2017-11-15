@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Lieutenant
-  module Exception
-    class NoRegisteredHandler < StandardError
+  class Exception
+    class NoRegisteredHandler < Lieutenant::Exception
     end
   end
 end
