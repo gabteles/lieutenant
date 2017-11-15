@@ -2,7 +2,7 @@
 
 module Lieutenant
   module Exception
-    class NoRegisteredHandler < StandardError
+    class ConcurrencyConflict < Lieutenant::Exception
     end
   end
 end

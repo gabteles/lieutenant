@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Lieutenant
-  class Event
-    def initialize(uuid, version, data)
-      @uuid = uuid
-      @version = version
+  module Event
+    attr_accessor :aggregate_id, :sequence_number
+
+    def initialize(data)
       @data = data
     end
   end

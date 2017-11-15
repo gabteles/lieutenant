@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 module Lieutenant
   class Config
     extend Forwardable
 
     def initialize
       @registrations = {
-        command_sender: CommandSender.new
+        command_sender: CommandSender.new,
+        event_publisher: EventPublisher::InMemory.new,
+        event_store: EventStore::InMemory.new
       }
     end
 
@@ -17,7 +21,7 @@ module Lieutenant
       args.empty? ? get(name) : set(name, *args)
     end
 
-    private
+    private # rubocop:disable Lint/UselessAccessModifier
 
     def_delegator :@registrations, :[], :get
     def_delegator :@registrations, :[]=, :set
