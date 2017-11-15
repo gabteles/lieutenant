@@ -2,13 +2,15 @@
 
 module Lieutenant
   class CommandSender
-    def call(command)
+    def dispatch(command)
       command_class = command.class
 
       handlers
         .fetch(command_class) { raise(Exception::NoRegisteredHandler, "No registered handler for #{command_class}") }
         .call(command)
     end
+
+    alias :call :dispatch
 
     def register(command_class, handler)
       raise(ArgumentError, "Expected #{command_class} to include Lieutenant::Command") unless command_class < Command
