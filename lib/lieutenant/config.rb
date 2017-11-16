@@ -6,6 +6,7 @@ module Lieutenant
 
     def initialize
       @registrations = {
+        aggregate_repository: AggregateRepository.new,
         command_sender: CommandSender.new,
         event_bus: EventBus::InMemory.new,
         event_store: EventStore::InMemory.new

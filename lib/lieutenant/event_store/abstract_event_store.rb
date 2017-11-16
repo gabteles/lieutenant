@@ -15,6 +15,10 @@ module Lieutenant
         end
       end
 
+      def event_stream_for(aggregate_id)
+        AggregateNotFound.new(aggregate_id)
+      end
+
       private
 
       def append_event(aggregate_id, sequence_number, event)

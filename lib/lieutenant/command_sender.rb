@@ -3,11 +3,18 @@
 module Lieutenant
   class CommandSender
     def dispatch(command)
-      command_class = command.class
+      handler = handler_for(command.class)
+      repository = repository_uow
 
-      handlers
-        .fetch(command_class) { raise(Exception::NoRegisteredHandler, "No registered handler for #{command_class}") }
-        .call(command)
+      begin
+        handler.call(repository, command)
+        repository.commit
+      # rescue Exception::ConcurrencyConflict
+      #   TODO: implement command retry policy
+      ensure
+        repository.clean
+      end
+
     end
 
     alias :call :dispatch
@@ -22,8 +29,18 @@ module Lieutenant
 
     private
 
+    def handler_for(command_class)
+      handlers.fetch(command_class) do
+        raise(Exception::NoRegisteredHandler, "No registered handler for #{command_class}")
+      end
+    end
+
     def handlers
       @handlers ||= {}
+    end
+
+    def repository_uow
+      Lieutenant.config.aggregate_repository.unit_of_work
     end
   end
 end

@@ -7,9 +7,18 @@ module Lieutenant
     end
 
     module ClassMethods
-      def load_from_history(history)
+      def load_from_history(id, history)
         allocate.tap do |aggregate|
-          history.each { |event| aggregate.send(:internal_apply, event, false) }
+          aggregate.send(:setup, id)
+
+          count = -1
+
+          history.each { |event|
+            aggregate.send(:internal_apply, event, false)
+            count += 1
+          }
+
+          aggregate.send(:version=, count)
         end
       end
 
@@ -32,24 +41,22 @@ module Lieutenant
     end
 
     attr_reader :id
-    attr_reader :uncommited_events
+    attr_reader :uncommitted_events
     attr_reader :version
 
     def initialize(id)
-      @id = id
-      @uncommited_events = []
-      @version = -1
+      setup(id)
     end
 
-    def mark_as_commited
-      self.version += uncommited_events.size
-      uncommited_events.clear
+    def mark_as_committed
+      self.version += uncommitted_events.size
+      uncommitted_events.clear
     end
 
     protected
 
     def apply(event_class, *args)
-      event = event_class.new(args)
+      event = event_class.new(*args)
       internal_apply(event, true)
     end
 
@@ -57,9 +64,15 @@ module Lieutenant
 
     private
 
+    def setup(id)
+      @id = id
+      @uncommitted_events = []
+      @version = -1
+    end
+
     def internal_apply(event, is_new)
       self.class.handlers_for(event.class).each { |handler| instance_exec(event, &handler) }
-      uncommited_events << event if is_new
+      uncommitted_events << event if is_new
     end
   end
 end

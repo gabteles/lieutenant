@@ -3,8 +3,9 @@
 module Lieutenant
   module Event
     attr_accessor :aggregate_id, :sequence_number
+    attr_accessor :data # TODO: remove
 
-    def initialize(data)
+    def initialize(data = {})
       @data = data
     end
   end
