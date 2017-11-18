@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 module Lieutenant
+  # Representation of an aggregate root
   module Aggregate
     def self.included(base)
       base.extend(ClassMethods)
     end
 
+    # Define common class methods to aggregates
     module ClassMethods
       def load_from_history(id, history)
         allocate.tap do |aggregate|

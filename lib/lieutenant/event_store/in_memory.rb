@@ -2,6 +2,7 @@
 
 module Lieutenant
   module EventStore
+    # Memory implementation of the event store. Stores events while tha application is running
     class InMemory
       include AbstractEventStore
 

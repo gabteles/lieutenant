@@ -2,16 +2,17 @@
 
 module Lieutenant
   module EventStore
+    # Abstract event store implementation. Do version checking, control
+    # calls to store implementation, and publishes appended events to
+    # event bus
     module AbstractEventStore
       def save_events(aggregate_id, events, expected_version)
         if aggregate_sequence_number(aggregate_id) != expected_version
           raise(Exception::ConcurrencyConflict)
         end
 
-        around_persistence do
-          events.reduce(expected_version + 1) do |sequence_number, event|
-            append_event(aggregate_id, sequence_number, event)
-          end
+        events.reduce(expected_version + 1) do |sequence_number, event|
+          append_event(aggregate_id, sequence_number, event)
         end
       end
 

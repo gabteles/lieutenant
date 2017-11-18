@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 module Lieutenant
+  # Command handler helper. Allows clean syntax to register handlers:
+  #
+  # ```ruby
+  # module FooCommandHandler
+  #   include Lieutenant::CommandHandler
+  #
+  #   on(BarCommand) do |repository, command|
+  #      # ...
+  #   end
+  # end
+  # ```
   module CommandHandler
     def self.included(base)
       base.extend(self)

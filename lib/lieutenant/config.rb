@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Lieutenant
+  # Manages configuration
   class Config
     extend Forwardable
 

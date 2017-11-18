@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 module Lieutenant
+  # Manages the repository logic to persist and retrieve aggregates
   class AggregateRepository
-    def unit_of_work
-      AggregateRepositoryUnit.new(Lieutenant.config.event_store)
+    # TODO: store should be passed in instance initialization
+    def unit_of_work(store)
+      AggregateRepositoryUnit.new(store)
     end
 
+    # Represents one unit of work of the repository to grant independence
+    # between multiple concurrent commands being handled
     class AggregateRepositoryUnit
       def initialize(store)
         @aggregates = {}

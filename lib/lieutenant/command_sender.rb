@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Lieutenant
+  # Command bus dispatch commands to the appropriate handler and manages the repository commit/clean
   class CommandSender
     def dispatch(command)
       handler = handler_for(command.class)
@@ -19,7 +20,6 @@ module Lieutenant
     alias call dispatch
 
     def register(command_class, handler)
-      raise(ArgumentError, "Expected #{command_class} to include Lieutenant::Command") unless command_class < Command
       raise(ArgumentError, "Expected #{handler} to respond to #call") unless handler.respond_to?(:call)
       raise("Handler for #{command_class} already registered") if handlers.key?(command_class)
 
@@ -39,7 +39,7 @@ module Lieutenant
     end
 
     def repository_uow
-      Lieutenant.config.aggregate_repository.unit_of_work
+      Lieutenant.config.aggregate_repository.unit_of_work(Lieutenant.config.event_store)
     end
   end
 end

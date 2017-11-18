@@ -2,6 +2,7 @@
 
 module Lieutenant
   module EventBus
+    # Memory implementation of the event bus. Publishes and notifies on the same memory space.
     class InMemory
       def handlers
         @handlers ||= Hash.new { [] }
