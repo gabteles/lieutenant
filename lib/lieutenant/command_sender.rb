@@ -14,10 +14,9 @@ module Lieutenant
       ensure
         repository.clean
       end
-
     end
 
-    alias :call :dispatch
+    alias call dispatch
 
     def register(command_class, handler)
       raise(ArgumentError, "Expected #{command_class} to include Lieutenant::Command") unless command_class < Command

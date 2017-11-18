@@ -13,10 +13,10 @@ module Lieutenant
 
           count = -1
 
-          history.each { |event|
+          history.each do |event|
             aggregate.send(:internal_apply, event, false)
             count += 1
-          }
+          end
 
           aggregate.send(:version=, count)
         end
