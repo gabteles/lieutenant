@@ -14,8 +14,6 @@ module Lieutenant
   autoload :EventBus,            'lieutenant/event_bus'
   autoload :EventStore,          'lieutenant/event_store'
   autoload :Exception,           'lieutenant/exception'
-  autoload :Projection,          'lieutenant/projection'
-  autoload :Saga,                'lieutenant/saga'
   autoload :VERSION,             'lieutenant/version'
 
   module_function
