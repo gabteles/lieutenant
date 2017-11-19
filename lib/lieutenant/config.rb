@@ -6,11 +6,15 @@ module Lieutenant
     extend Forwardable
 
     def initialize
+      event_bus   = EventBus::InMemory.new
+      event_store = EventStore.new(EventStore::InMemory.new, event_bus)
+      aggregate_repository = AggregateRepository.new(event_bus)
+
       @registrations = {
-        aggregate_repository: AggregateRepository.new,
         command_sender: CommandSender.new,
-        event_bus: EventBus::InMemory.new,
-        event_store: EventStore::InMemory.new
+        event_bus: event_bus,
+        event_store: event_store,
+        aggregate_repository: aggregate_repository
       }
     end
 

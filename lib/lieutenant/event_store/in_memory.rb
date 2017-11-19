@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module Lieutenant
-  module EventStore
+  class EventStore
     # Memory implementation of the event store. Stores events while tha application is running
     class InMemory
-      include AbstractEventStore
-
       def initialize
         @store = {}
       end
@@ -16,8 +14,8 @@ module Lieutenant
 
       def event_stream_for(aggregate_id)
         events = store[aggregate_id]
-        return super unless events
-        Enumerator.new { |y| events.each(&y.method(:<<)) }
+        return nil unless events
+        Enumerator.new { |yielder| events.each(&yielder.method(:<<)) }
       end
 
       def aggregate_sequence_number(aggregate_id)

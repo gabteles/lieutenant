@@ -3,10 +3,17 @@
 module Lieutenant
   # Manages the repository logic to persist and retrieve aggregates
   class AggregateRepository
-    # TODO: store should be passed in instance initialization
-    def unit_of_work(store)
+    def initialize(store)
+      @store = store
+    end
+
+    def unit_of_work
       AggregateRepositoryUnit.new(store)
     end
+
+    private
+
+    attr_reader :store
 
     # Represents one unit of work of the repository to grant independence
     # between multiple concurrent commands being handled
@@ -27,12 +34,19 @@ module Lieutenant
         end
       end
 
-      def commit
-        aggregates.each_value do |aggregate|
-          store.save_events(aggregate.id, aggregate.uncommitted_events, aggregate.version)
-          aggregate.mark_as_committed
-        end
+      def execute
+        yield
+        commit
+        # rescue Exception::ConcurrencyConflict
+        #   TODO: implement command retry policy
+      ensure
+        clean
+      end
 
+      private
+
+      def commit
+        aggregates.each_value(&COMMIT_AGGREGATE)
         clean
       end
 
@@ -40,10 +54,13 @@ module Lieutenant
         aggregates.clear
       end
 
-      private
-
       attr_reader :aggregates
       attr_reader :store
+
+      COMMIT_AGGREGATE = lambda do |aggregate|
+        store.save_events(aggregate.id, aggregate.uncommitted_events, aggregate.version)
+        aggregate.mark_as_committed
+      end
     end
   end
 end

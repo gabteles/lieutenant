@@ -17,6 +17,7 @@ module Lieutenant
       base.extend(self)
     end
 
+    # :reek:UtilityFunction
     def on(command_class, &block)
       Lieutenant.config.command_sender.register(command_class, block)
     end

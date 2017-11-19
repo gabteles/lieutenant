@@ -10,18 +10,7 @@ module Lieutenant
     # Define common class methods to aggregates
     module ClassMethods
       def load_from_history(id, history)
-        allocate.tap do |aggregate|
-          aggregate.send(:setup, id)
-
-          count = -1
-
-          history.each do |event|
-            aggregate.send(:internal_apply, event, false)
-            count += 1
-          end
-
-          aggregate.send(:version=, count)
-        end
+        allocate.load_from_history(id, history)
       end
 
       def on(*event_classes, &handler)
@@ -46,10 +35,6 @@ module Lieutenant
     attr_reader :uncommitted_events
     attr_reader :version
 
-    def initialize(id)
-      setup(id)
-    end
-
     def mark_as_committed
       self.version += uncommitted_events.size
       uncommitted_events.clear
@@ -57,9 +42,10 @@ module Lieutenant
 
     protected
 
-    def apply(event_class, *args)
-      event = event_class.new(*args)
-      internal_apply(event, true)
+    def apply(event_class, params)
+      event = event_class.new.data(params)
+      internal_apply(event)
+      uncommitted_events << event
     end
 
     attr_writer :version
@@ -72,9 +58,19 @@ module Lieutenant
       @version = -1
     end
 
-    def internal_apply(event, is_new)
+    def load_from_history(id, history)
+      setup(id)
+
+      history.each do |event|
+        internal_apply(event)
+        self.version += 1
+      end
+
+      self
+    end
+
+    def internal_apply(event)
       self.class.handlers_for(event.class).each { |handler| instance_exec(event, &handler) }
-      uncommitted_events << event if is_new
     end
   end
 end
