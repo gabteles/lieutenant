@@ -8,7 +8,7 @@ module Lieutenant
     def initialize
       event_bus   = EventBus::InMemory.new
       event_store = EventStore.new(EventStore::InMemory.new, event_bus)
-      aggregate_repository = AggregateRepository.new(event_bus)
+      aggregate_repository = AggregateRepository.new(event_store)
 
       @registrations = {
         command_sender: CommandSender.new,

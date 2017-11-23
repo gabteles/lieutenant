@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'forwardable'
+require 'active_model'
 
 # Lieutenant namespace
 module Lieutenant
@@ -14,6 +15,7 @@ module Lieutenant
   autoload :EventBus,            'lieutenant/event_bus'
   autoload :EventStore,          'lieutenant/event_store'
   autoload :Exception,           'lieutenant/exception'
+  autoload :Message,             'lieutenant/message'
   autoload :VERSION,             'lieutenant/version'
 
   module_function

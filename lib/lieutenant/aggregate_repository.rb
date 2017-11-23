@@ -35,7 +35,7 @@ module Lieutenant
       end
 
       def execute
-        yield
+        yield(self)
         commit
         # rescue Exception::ConcurrencyConflict
         #   TODO: implement command retry policy
@@ -46,7 +46,7 @@ module Lieutenant
       private
 
       def commit
-        aggregates.each_value(&COMMIT_AGGREGATE)
+        aggregates.each_value(&method(:commit_aggregate))
         clean
       end
 
@@ -57,7 +57,7 @@ module Lieutenant
       attr_reader :aggregates
       attr_reader :store
 
-      COMMIT_AGGREGATE = lambda do |aggregate|
+      def commit_aggregate(aggregate)
         store.save_events(aggregate.id, aggregate.uncommitted_events, aggregate.version)
         aggregate.mark_as_committed
       end

@@ -5,13 +5,15 @@ module Lieutenant
   class CommandSender
     def dispatch(command)
       handler = handler_for(command.class)
+      # TODO: Filters
+      raise(Lieutenant::Exception, "Invalid command: #{command.inspect}") unless command.valid?
       Lieutenant.config.aggregate_repository.unit_of_work.execute { |repository| handler.call(repository, command) }
     end
 
     alias call dispatch
 
     def register(command_class, handler)
-      raise("Handler for #{command_class} already registered") if handlers.key?(command_class)
+      raise(Lieutenant::Exception, "Handler for #{command_class} already registered") if handlers.key?(command_class)
       handlers[command_class] = handler
     end
 

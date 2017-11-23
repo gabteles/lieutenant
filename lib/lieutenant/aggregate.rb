@@ -42,8 +42,8 @@ module Lieutenant
 
     protected
 
-    def apply(event_class, params)
-      event = event_class.new.data(params)
+    def apply(event_class, **params)
+      event = event_class.with(**params)
       internal_apply(event)
       uncommitted_events << event
     end

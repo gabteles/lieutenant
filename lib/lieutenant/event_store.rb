@@ -11,7 +11,7 @@ module Lieutenant
     end
 
     def save_events(aggregate_id, events, expected_version)
-      raise(Exception::ConcurrencyConflict) if aggregate_sequence_number(aggregate_id) != expected_version
+      raise(Exception::ConcurrencyConflict) if store.aggregate_sequence_number(aggregate_id) != expected_version
 
       final_events = PREPARE_EVENTS[aggregate_id, events, expected_version]
 
@@ -29,10 +29,12 @@ module Lieutenant
     private
 
     attr_reader :store
+    attr_reader :event_bus
 
     PREPARE_EVENTS = lambda do |aggregate_id, events, sequence_number|
-      events.lazy.map.with_index do |event, idx|
+      events.lazy.with_index.map do |event, idx|
         event.prepare(aggregate_id, sequence_number + idx + 1)
+        event
       end
     end
 

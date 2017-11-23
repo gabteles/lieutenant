@@ -24,6 +24,10 @@ module Lieutenant
         last_event ? last_event.sequence_number : -1
       end
 
+      def around_persistence
+        yield
+      end
+
       private
 
       attr_reader :store
