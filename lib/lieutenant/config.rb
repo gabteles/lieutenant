@@ -9,12 +9,13 @@ module Lieutenant
       event_bus   = EventBus::InMemory.new
       event_store = EventStore.new(EventStore::InMemory.new, event_bus)
       aggregate_repository = AggregateRepository.new(event_store)
+      command_sender = CommandSender.new(aggregate_repository)
 
       @registrations = {
-        command_sender: CommandSender.new,
         event_bus: event_bus,
         event_store: event_store,
-        aggregate_repository: aggregate_repository
+        aggregate_repository: aggregate_repository,
+        command_sender: command_sender
       }
     end
 

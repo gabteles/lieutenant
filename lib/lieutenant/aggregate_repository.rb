@@ -37,8 +37,6 @@ module Lieutenant
       def execute
         yield(self)
         commit
-        # rescue Exception::ConcurrencyConflict
-        #   TODO: implement command retry policy
       ensure
         clean
       end
@@ -57,6 +55,7 @@ module Lieutenant
       attr_reader :aggregates
       attr_reader :store
 
+      # :reek:FeatureEnvy
       def commit_aggregate(aggregate)
         store.save_events(aggregate.id, aggregate.uncommitted_events, aggregate.version)
         aggregate.mark_as_committed

@@ -70,6 +70,7 @@ module Lieutenant
     end
 
     def internal_apply(event)
+      raise(Lieutenant::Exception, "Invalid event: #{event.inspect}") unless event.valid?
       self.class.handlers_for(event.class).each { |handler| instance_exec(event, &handler) }
     end
   end
