@@ -2,7 +2,11 @@
 
 require 'bundler/setup'
 require 'simplecov'
-SimpleCov.start
+
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
 require 'lieutenant'
 
 RSpec.configure do |config|
