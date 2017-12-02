@@ -10,7 +10,7 @@ module Lieutenant
     # Define common class methods to aggregates
     module ClassMethods
       def load_from_history(id, history)
-        allocate.load_from_history(id, history)
+        allocate.send(:load_from_history, id, history)
       end
 
       def on(*event_classes, &handler)

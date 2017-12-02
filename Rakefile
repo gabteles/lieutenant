@@ -16,4 +16,5 @@ end
 YARD::Rake::YardocTask.new
 
 task default: :spec
-task fulltest: %i[spec rubocop reek]
+task lint: %i[rubocop reek]
+task fulltest: %i[spec lint]

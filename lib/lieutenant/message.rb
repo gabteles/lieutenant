@@ -12,7 +12,13 @@ module Lieutenant
     module ClassMethods
       def with(params)
         new.tap do |command|
-          params.each_pair { |key, value| command.send("#{key}=", value) }
+          params.each_pair do |key, value|
+            begin
+              command.send("#{key}=", value)
+            rescue NoMethodError # rubocop:disable Lint/HandleExceptions
+              # DO NOTHING
+            end
+          end
         end
       end
     end
