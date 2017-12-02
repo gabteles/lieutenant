@@ -13,17 +13,17 @@ module Lieutenant
     def save_events(aggregate_id, events, expected_version)
       raise(Exception::ConcurrencyConflict) if store.aggregate_sequence_number(aggregate_id) != expected_version
 
-      final_events = PREPARE_EVENTS[aggregate_id, events, expected_version]
+      PREPARE_EVENTS[aggregate_id, events, expected_version].tap do |final_events|
+        store.around_persistence do
+          final_events.each(&store.method(:persist))
+        end
 
-      store.around_persistence do
-        final_events.each(&store.method(:persist))
+        final_events.each(&event_bus.method(:publish))
       end
-
-      final_events.each(&event_bus.method(:publish))
     end
 
     def event_stream_for(aggregate_id)
-      store.event_stream_for(aggregate_id) || raise(AggregateNotFound, aggregate_id)
+      store.event_stream_for(aggregate_id) || raise(Exception::AggregateNotFound, aggregate_id)
     end
 
     private
