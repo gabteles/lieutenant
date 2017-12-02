@@ -68,7 +68,7 @@ RSpec.describe Lieutenant::EventStore do
 
     context 'when store returns a truthy value' do
       before { allow(store).to receive(:event_stream_for).and_return(stream) }
-      let(:stream) { Enumerator.new { } }
+      let(:stream) { Enumerator.new {} }
 
       it 'returns stream from store' do
         is_expected.to be(stream)
