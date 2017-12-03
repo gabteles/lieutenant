@@ -4,8 +4,10 @@ module Lieutenant
   # Helper to define messages with validation
   module Message
     def self.included(base)
-      base.extend(ClassMethods)
-      base.include(ActiveModel::Validations)
+      base.instance_eval do
+        extend Lieutenant::Message::ClassMethods
+        include ActiveModel::Validations
+      end
     end
 
     # Define common class methods to commands

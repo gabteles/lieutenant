@@ -4,7 +4,9 @@ module Lieutenant
   # The basic interface to register the aggregates events
   module Event
     def self.included(base)
-      base.include(Message)
+      base.instance_eval do
+        include Lieutenant::Message
+      end
     end
 
     attr_reader :aggregate_id, :sequence_number

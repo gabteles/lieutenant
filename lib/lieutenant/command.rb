@@ -4,7 +4,9 @@ module Lieutenant
   # Syntax helper to define commands
   module Command
     def self.included(base)
-      base.include(Message)
+      base.instance_eval do
+        include Lieutenant::Message
+      end
     end
   end
 end
