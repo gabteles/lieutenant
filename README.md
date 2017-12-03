@@ -10,7 +10,9 @@
 
 Lieutenant is a toolkit that implements various of the components of Command & Query Responsability Segregation (CQRS) and Event Sourcing (ES). It means that your application can get rid of the "current" state of the entities you choose and store all the *changes* that led them to it.
 
-This gem aims to be most independent as possible of your tecnological choices, it means that it should work with Rails, Sinatra, pure Rack apps or whatever you want.
+This gem aims to be most independent as possible of your tecnological choices: it should work with Rails, Sinatra, pure Rack apps or whatever you want.
+
+Not limited to the framework, you can also pick one of the event bus and/or event store that meets your needs, In Memory implementation of event bus, for example, can be the first step to start moving from the big monolith into some kind of distributed behaviour, until you get confident to replace it by some AWS SQS or Kafka implementation of the event bus.
 
 If you are not familiarized, you may check this references:
 
