@@ -8,6 +8,11 @@ module Lieutenant
       @handlers = {}
     end
 
+    def register(command_class, handler)
+      raise(Lieutenant::Exception, "Handler for #{command_class} already registered") if handlers.key?(command_class)
+      handlers[command_class] = handler
+    end
+
     def dispatch(command)
       handler = handler_for(command.class)
       # TODO: Filters
@@ -18,11 +23,6 @@ module Lieutenant
     end
 
     alias call dispatch
-
-    def register(command_class, handler)
-      raise(Lieutenant::Exception, "Handler for #{command_class} already registered") if handlers.key?(command_class)
-      handlers[command_class] = handler
-    end
 
     private
 
