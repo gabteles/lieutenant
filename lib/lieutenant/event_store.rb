@@ -14,10 +14,7 @@ module Lieutenant
       raise(Exception::ConcurrencyConflict) if store.aggregate_sequence_number(aggregate_id) != expected_version
 
       PREPARE_EVENTS[aggregate_id, events, expected_version].tap do |final_events|
-        store.around_persistence do
-          final_events.each(&store.method(:persist))
-        end
-
+        store.persist(final_events)
         final_events.each(&event_bus.method(:publish))
       end
     end

@@ -22,7 +22,6 @@ RSpec.describe Lieutenant::EventStore do
 
     before do
       allow(store).to receive(:aggregate_sequence_number).and_return(expected_version)
-      allow(store).to receive(:around_persistence).and_yield
       allow(store).to receive(:persist)
       allow(event_a).to receive(:prepare)
       allow(event_b).to receive(:prepare)
@@ -35,10 +34,8 @@ RSpec.describe Lieutenant::EventStore do
       subject
     end
 
-    it 'persists each event by passing them to store inside a transaction' do
-      expect(store).to receive(:around_persistence).and_yield
-      expect(store).to receive(:persist).with(event_a)
-      expect(store).to receive(:persist).with(event_b)
+    it 'persists events by passing them to store' do
+      expect(store).to receive(:persist).with(events)
       subject
     end
 

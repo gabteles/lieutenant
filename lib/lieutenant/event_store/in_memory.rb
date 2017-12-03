@@ -9,8 +9,8 @@ module Lieutenant
         @transaction_stack = []
       end
 
-      def persist(event)
-        @transaction_stack.last.push(event)
+      def persist(events)
+        events.each { |event| (store[event.aggregate_id] ||= []).push(event) }
       end
 
       def event_stream_for(aggregate_id)
@@ -23,16 +23,6 @@ module Lieutenant
         return -1 unless store.key?(aggregate_id)
         last_event = store[aggregate_id].last
         last_event ? last_event.sequence_number : -1
-      end
-
-      def around_persistence
-        @transaction_stack.push([])
-
-        yield
-
-        @transaction_stack.pop.each do |event|
-          (store[event.aggregate_id] ||= []).push(event)
-        end
       end
 
       private
