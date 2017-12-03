@@ -2,7 +2,7 @@
 
 module Lieutenant
   class EventStore
-    # Memory implementation of the event store. Stores events while tha application is running
+    # Memory implementation of the event store. Stores events while the application is running
     class InMemory
       def initialize
         @store = {}

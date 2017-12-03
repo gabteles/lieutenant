@@ -3,15 +3,13 @@
 module Lieutenant
   # Command handler helper. Allows clean syntax to register handlers:
   #
-  # ```ruby
-  # module FooCommandHandler
-  #   include Lieutenant::CommandHandler
+  #   module FooCommandHandler
+  #     include Lieutenant::CommandHandler
   #
-  #   on(BarCommand) do |repository, command|
-  #      # ...
+  #     on(BarCommand) do |repository, command|
+  #        # ...
+  #     end
   #   end
-  # end
-  # ```
   module CommandHandler
     def self.included(base)
       base.extend(self)

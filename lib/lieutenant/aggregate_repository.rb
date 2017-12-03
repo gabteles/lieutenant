@@ -45,7 +45,6 @@ module Lieutenant
 
       def commit
         aggregates.each_value(&method(:commit_aggregate))
-        clean
       end
 
       def clean
