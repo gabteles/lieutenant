@@ -5,12 +5,12 @@ module Lieutenant
     # Memory implementation of the event bus. Publishes and notifies on the same memory space.
     class InMemory
       def initialize
-        @handlers = {}
+        @handlers = Hash.new { [] }
       end
 
       def subscribe(*event_classes, &handler)
         event_classes.each do |event_class|
-          handlers[event_class] = handlers.fetch(event_class, []).push(handler)
+          handlers[event_class] = handlers[event_class].push(handler)
         end
       end
 
@@ -19,6 +19,10 @@ module Lieutenant
         handlers[:all].each(&block)
         handlers[event.class].each(&block)
       end
+
+      private
+
+      attr_reader :handlers
 
       CALL_HANDLER_WITH_EVENT = ->(event) { ->(handler) { handler.call(event) } }
       private_constant :CALL_HANDLER_WITH_EVENT
