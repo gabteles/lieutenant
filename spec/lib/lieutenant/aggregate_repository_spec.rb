@@ -118,7 +118,7 @@ RSpec.describe Lieutenant::AggregateRepository do
                 repository.add_aggregate(aggregate)
                 raise
               end
-            rescue
+            rescue StandardError
               instance.execute { |repository| repository.add_aggregate(aggregate) }
             end
           end

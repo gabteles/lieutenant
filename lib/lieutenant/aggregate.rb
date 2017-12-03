@@ -15,8 +15,11 @@ module Lieutenant
 
       def on(*event_classes, &handler)
         event_classes.each do |event_class|
-          raise(ArgumentError, "Expected #{event_class} to include Lieutenant::Event") unless event_class < Event
-          handlers[event_class] = handlers.fetch(event_class, []).push(handler)
+          unless event_class < Event
+            raise(Lieutenant::Exception, "Expected #{event_class} to include Lieutenant::Event")
+          end
+
+          handlers[event_class] = handlers[event_class].push(handler)
         end
       end
 
@@ -27,7 +30,7 @@ module Lieutenant
       private
 
       def handlers
-        @handlers ||= {}
+        @handlers ||= Hash.new { [] }
       end
     end
 
