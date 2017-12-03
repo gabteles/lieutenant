@@ -6,10 +6,11 @@ module Lieutenant
     class InMemory
       def initialize
         @store = {}
+        @transaction_stack = []
       end
 
       def persist(event)
-        (store[event.aggregate_id] ||= []).push(event)
+        @transaction_stack.last.push(event)
       end
 
       def event_stream_for(aggregate_id)
@@ -25,7 +26,13 @@ module Lieutenant
       end
 
       def around_persistence
+        @transaction_stack.push([])
+
         yield
+
+        @transaction_stack.pop.each do |event|
+          (store[event.aggregate_id] ||= []).push(event)
+        end
       end
 
       private

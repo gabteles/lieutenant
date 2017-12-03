@@ -4,13 +4,13 @@ module Lieutenant
   module EventBus
     # Memory implementation of the event bus. Publishes and notifies on the same memory space.
     class InMemory
-      def handlers
-        @handlers ||= Hash.new { [] }
+      def initialize
+        @handlers = {}
       end
 
       def subscribe(*event_classes, &handler)
         event_classes.each do |event_class|
-          handlers[event_class] = handlers[event_class].push(handler)
+          handlers[event_class] = handlers.fetch(event_class, []).push(handler)
         end
       end
 
