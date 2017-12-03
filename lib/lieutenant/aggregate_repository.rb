@@ -44,6 +44,7 @@ module Lieutenant
       private
 
       def commit
+        # TODO: Transaction to persist all at same time
         aggregates.each_value(&method(:commit_aggregate))
       end
 
