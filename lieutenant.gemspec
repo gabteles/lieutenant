@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Gabriel Teles']
   spec.email         = ['gab.teles@hotmail.com']
 
-  spec.summary       = 'CQRS/ES Framework to command them all'
+  spec.summary       = 'CQRS/ES Toolkit to command them all'
   spec.homepage      = 'https://github.com/gabteles/lieutenant'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
