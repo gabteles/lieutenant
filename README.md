@@ -34,14 +34,14 @@ Or install it yourself as:
 
 By now, Lieutenant offer the components listed below. With each one, there's a description and example usage. If you cannot understand it, feel free to open an issue. Or if you think that it's not sufficient to other people, pull requests are welcome!
 
-- Commands
-- Command Sender
-- Command Handlers
-- Aggregate Repositories
-- Aggregates
-- Events
-- Event Store
-- Event Bus
+- [Commands](#commands)
+- [Command Sender](#command-sender)
+- [Command Handlers](#command-handlers)
+- [Aggregate Repositories](#aggregate-repositories)
+- [Aggregates](#aggregates)
+- [Events](#events)
+- [Event Store](#event-store)
+- [Event Bus](#event-bus)
 
 ### Commands
 
