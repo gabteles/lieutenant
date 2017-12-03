@@ -6,7 +6,6 @@ module Lieutenant
     class InMemory
       def initialize
         @store = {}
-        @transaction_stack = []
       end
 
       def persist(events)
@@ -22,6 +21,11 @@ module Lieutenant
       def aggregate_sequence_number(aggregate_id)
         return -1 unless store.key?(aggregate_id)
         store[aggregate_id].last.sequence_number
+      end
+
+      def transaction
+        # In memory event store currently does not support transactions.
+        yield
       end
 
       private

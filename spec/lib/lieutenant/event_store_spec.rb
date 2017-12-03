@@ -81,4 +81,17 @@ RSpec.describe Lieutenant::EventStore do
       end
     end
   end
+
+  describe '#transaction' do
+    subject { described_class.new(store, event_bus).transaction(&block) }
+    let(:block) { ->() {} }
+
+    it 'repasses transaction block to implementation' do
+      expect(store).to receive(:transaction).with(no_args) do |*, &received_block|
+        expect(received_block).to be(block)
+      end
+
+      subject
+    end
+  end
 end

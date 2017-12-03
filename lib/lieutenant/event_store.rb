@@ -23,6 +23,10 @@ module Lieutenant
       store.event_stream_for(aggregate_id) || raise(Exception::AggregateNotFound, aggregate_id)
     end
 
+    def transaction(&blk)
+      store.transaction(&blk)
+    end
+
     private
 
     attr_reader :store

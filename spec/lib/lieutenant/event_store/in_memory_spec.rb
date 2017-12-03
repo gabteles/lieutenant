@@ -70,4 +70,10 @@ RSpec.describe Lieutenant::EventStore::InMemory do
       end
     end
   end
+
+  describe '#transaction' do
+    it 'yields' do
+      expect { |b| instance.transaction(&b) }.to yield_control
+    end
+  end
 end

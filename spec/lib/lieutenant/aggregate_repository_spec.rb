@@ -96,10 +96,12 @@ RSpec.describe Lieutenant::AggregateRepository do
 
         before do
           allow(store).to receive(:save_events)
+          allow(store).to receive(:transaction).and_yield
           allow(aggregate).to receive(:mark_as_committed)
         end
 
-        it 'persists events using store' do
+        it 'persists events using store inside a transaction' do
+          expect(store).to receive(:transaction)
           expect(store).to receive(:save_events).with(aggregate_id, events, version)
           instance.execute { |repository| repository.add_aggregate(aggregate) }
         end
