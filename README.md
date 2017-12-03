@@ -2,6 +2,12 @@
 
 ## **CQRS/ES Toolkit to command them all**
 
+[![Gem Version](https://badge.fury.io/rb/lieutenant.svg)](https://badge.fury.io/rb/lieutenant)
+[![Build Status](https://travis-ci.org/gabteles/lieutenant.svg?branch=master)](https://travis-ci.org/gabteles/lieutenant)
+[![Coverage Status](https://coveralls.io/repos/github/gabteles/lieutenant/badge.svg?branch=master)](https://coveralls.io/github/gabteles/lieutenant?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c96a6dd822547e657829/maintainability)](https://codeclimate.com/github/gabteles/lieutenant/maintainability)
+
+
 Lieutenant is a toolkit that implements various of the components of Command & Query Responsability Segregation (CQRS) and Event Sourcing (ES). It means that your application can get rid of the "current" state of the entities you choose and store all the *changes* that led them to it.
 
 This gem aims to be most independent as possible of your tecnological choices, it means that it should work with Rails, Sinatra, pure Rack apps or whatever you want.
