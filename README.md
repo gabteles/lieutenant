@@ -262,7 +262,15 @@ You need to set what implementation will be used, them Lieutenant will do the ma
 
 ### Event Bus
 
-TODO
+The event bus publishes and receives messages from the aggregates updates. As event stores, you should only worry about setting the needed implementation.
+
+You can also listen to it's events by subscribing to them:
+
+```ruby
+Lieutenant.config.event_bus.subscribe(MeetingScheduled) do |event|
+  puts "Meeting scheduled on room #{event.aggregate_id}, starts at #{event.date_start.iso8601}, ends at #{event.date_end.iso8601}"
+end
+```
 
 
 ### Configuration
