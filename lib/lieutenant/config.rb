@@ -12,6 +12,7 @@ module Lieutenant
     # :reek:BooleanParameter
     def event_store(implementation = false)
       return @event_store_implementation = implementation if implementation
+      @event_store_implementation ||= EventStore::InMemory
       @event_store ||= EventStore.new(@event_store_implementation, event_bus)
     end
 

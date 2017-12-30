@@ -275,8 +275,37 @@ end
 
 ### Configuration
 
-TODO
+Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementations.
 
+```ruby
+Lieutenant.config do |configuration|
+    configuration.event_bus(Lieutenant::EventBus::InMemory)
+    configuration.event_store(Lieutenant::EventStore::InMemory)
+end
+
+# OR
+
+Lieutenant.config.event_bus(Lieutenant::EventBus::InMemory)
+Lieutenant.config.event_store(Lieutenant::EventStore::InMemory)
+```
+
+You can also access configuration the same way:
+
+```ruby
+Lieutenant.config do |configuration|
+    configuration.event_bus # => Lieutenant::EventBus::InMemory
+    configuration.event_store # => Lieutenant::EventStore::InMemory
+    configuration.aggregate_repository # => Lieutentant::AggregateRepository
+    configuration.command_sender # => Lieutenant::CommandSender
+end
+
+# OR
+
+Lieutenant.config.event_bus # => Lieutenant::EventBus::InMemory
+Lieutenant.config.event_store # => Lieutenant::EventStore::InMemory
+Lieutenant.config.aggregate_repository # => Lieutentant::AggregateRepository
+Lieutenant.config.command_sender # => Lieutenant::CommandSender
+```
 
 ## Roadmap
 
