@@ -112,7 +112,29 @@ Lieutenant.config.command_sender.dispatch(command)
 
 ### Command Handlers
 
-TODO
+Command Handlers are orchestrators to your business logic. They will receive a command and a aggregate repository then will call the needed operations, they can load a aggregate by the identifier or add a new one to the repository.
+
+Handlers are simply objects that respond to `#call`. You can define them as [Proc's](https://ruby-doc.org/core-2.5.0/Proc.html), for example.
+
+Lieutenant also defines a syntax sugar to help definition of them:
+
+```ruby
+module ScheduleHandler
+    include Lieutenant::CommandHandler
+
+    on(ScheduleMeeting) do |repository, command|
+        # ...
+    end
+end
+```
+
+You can also register them directly on command sender:
+
+```ruby
+Lieutenant.config.command_sender.register(ScheduleMeeting) do |repository, command|
+    # ...
+end
+```
 
 
 ### Aggregate Repositories
