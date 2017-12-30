@@ -45,7 +45,7 @@ By now, Lieutenant offer the components listed below. With each one, there's a d
 - [Commands](#commands)
 - [Command Sender](#command-sender)
 - [Command Handlers](#command-handlers)
-- [Aggregate Repositories](#aggregate-repositories)
+- [Aggregate Repository](#aggregate-repository)
 - [Aggregates](#aggregates)
 - [Events](#events)
 - [Event Store](#event-store)
@@ -66,11 +66,13 @@ class ScheduleMeeting
 
     attr_accessor :description
     attr_accessor :location
+    attr_accessor :meeting_room_uuid
     attr_accessor :date_start
     attr_accessor :date_end
 
     validates :description, presence: true, length: { minimum: 3 }
     validates :location, presence: true, length: { minimum: 5 }
+    validates :meeting_room_uuid, presence: true
     validates :date_start, presence: true
     validates :date_end, presence: true
 
@@ -86,6 +88,7 @@ To instantiate commands you can use `.new` or helper method `.with`, that receiv
 ScheduleMeeting.with(
     description: 'Annual planning',
     location: 'Meeting room 2C',
+    meeting_room_uuid: '4bb0a8a0-9234-477d-8df4-5f10a2fb1faa',
     date_start: Time.mktime(2017, 12, 15, 14, 0, 0),
     date_end: Time.mktime(2017, 12, 15, 18, 0, 0)
 )
@@ -137,9 +140,24 @@ end
 ```
 
 
-### Aggregate Repositories
+### Aggregate Repository
 
-TODO
+The aggregate repository is responsible to control the changes in the application state. It means that it will collect events from created or modified aggregates.
+
+It also implements the [Unit of Work Pattern](https://martinfowler.com/eaaCatalog/unitOfWork.html) for each dispatched command, meaning that it will know what new events where created when processing the command.
+
+You'll interact only with the Repository Unit of Work, that is the `repository` parameter that command handlers receive. It allows you to:
+
+#### Add an aggregate:
+```ruby
+aggregate = MeetingRoom.new
+repository.add_aggregate(aggregate)
+```
+
+#### Load an aggregate:
+```ruby
+meeting_room = repository.load(MeetingRoom, command.meeting_room_uuid)
+```
 
 
 ### Aggregates
