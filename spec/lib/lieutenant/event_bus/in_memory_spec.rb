@@ -53,15 +53,5 @@ RSpec.describe Lieutenant::EventBus::InMemory do
         subject
       end
     end
-
-    context 'when there are registered subscribers to all events' do
-      before { instance.subscribe(:all, &handler) }
-      let(:handler) { ->() {} }
-
-      it 'does not call other handlers' do
-        expect(handler).to receive(:call).with(event)
-        subject
-      end
-    end
   end
 end

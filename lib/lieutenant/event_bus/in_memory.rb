@@ -15,17 +15,12 @@ module Lieutenant
       end
 
       def publish(event)
-        block = CALL_HANDLER_WITH_EVENT[event]
-        handlers[:all].each(&block)
-        handlers[event.class].each(&block)
+        handlers[event.class].each { |handler| handler.call(event) }
       end
 
       private
 
       attr_reader :handlers
-
-      CALL_HANDLER_WITH_EVENT = ->(event) { ->(handler) { handler.call(event) } }
-      private_constant :CALL_HANDLER_WITH_EVENT
     end
   end
 end
