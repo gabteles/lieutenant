@@ -136,6 +136,7 @@ Lieutenant.config.command_sender.register(ScheduleMeeting) do |repository, comma
 end
 ```
 
+It's important that command handlers do not have side-effects, since the commands **can** be retried (and eventually they will). If you, for example, send an email inside your handler, it may be sent twice in case of command retry.
 
 ### Aggregate Repository
 
@@ -231,6 +232,7 @@ class MeetingRoom
 end
 ```
 
+For the same reason of the command handlers, aggregates should not have side-effects inside them.
 
 ### Events
 
