@@ -53,8 +53,42 @@ By now, Lieutenant offer the components listed below. With each one, there's a d
 
 ### Commands
 
-TODO
+Commands are the representation of the system actions. They describe a **intention** to do something (e.g. `ScheduleMeeting`, `DisableProduct`).
 
+This classes do not need any special methods, just define attributes and validations.
+
+To use define them, just include `Lieutenant::Command` module. It'll allow you to use [ActiveModel Validations](http://guides.rubyonrails.org/active_record_validations.html).
+
+```ruby
+class ScheduleMeeting
+    include Lieutenant::Command
+
+    attr_accessor :description
+    attr_accessor :location
+    attr_accessor :date_start
+    attr_accessor :date_end
+
+    validates :description, presence: true, length: { minimum: 3 }
+    validates :location, presence: true, length: { minimum: 5 }
+    validates :date_start, presence: true
+    validates :date_end, presence: true
+
+    validate do
+        date_start.is_a?(Time) && date_end.is_a?(Time) && date_start < date_end
+    end
+end
+```
+
+To instantiate commands you can use `.new` or helper method `.with`, that receives the parameters as a Hash:
+
+```ruby
+ScheduleMeeting.with(
+    description: 'Annual planning',
+    location: 'Meeting room 2C',
+    date_start: Time.mktime(2017, 12, 15, 14, 0, 0),
+    date_end: Time.mktime(2017, 12, 15, 18, 0, 0)
+)
+```
 
 ### Command Sender
 
