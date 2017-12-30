@@ -236,8 +236,22 @@ For the same reason of the command handlers, aggregates should not have side-eff
 
 ### Events
 
-TODO
+Events register what happened with aggregates since they were created. They have same features as `Commands`: you can use ActiveModel Validations and instantiate them using `#with` method.
 
+Events exposes `aggregate_id` and `sequence_number`, that are used to know to which aggregate each event belongs to and it's order into the event stream. You should not worry about them, we use them internally ;)
+
+```ruby
+class MeetingScheduled
+    include Lieutenant::Event
+
+    attr_accessor :description
+    attr_accessor :date_start
+    attr_accessor :date_end
+    # Implicity defined:
+    # attr_accessor :aggregate_id (Meeting room's UUID)
+    # attr_accessor :sequence_number
+end
+```
 
 ### Event Store
 
