@@ -255,7 +255,9 @@ end
 
 ### Event Store
 
-TODO
+Event stores handles pushing and pulling events to/from the persistence. They are used by the Aggregate Repository to commit changes collected by one unit of work.
+
+You need to set what implementation will be used, them Lieutenant will do the magic. Please refer to [Configuration](#configuration).
 
 
 ### Event Bus
