@@ -64,15 +64,13 @@ To use define them, just include `Lieutenant::Command` module. It'll allow you t
 class ScheduleMeeting
     include Lieutenant::Command
 
-    attr_accessor :description
-    attr_accessor :location
     attr_accessor :meeting_room_uuid
+    attr_accessor :description
     attr_accessor :date_start
     attr_accessor :date_end
 
-    validates :description, presence: true, length: { minimum: 3 }
-    validates :location, presence: true, length: { minimum: 5 }
     validates :meeting_room_uuid, presence: true
+    validates :description, presence: true, length: { minimum: 3 }
     validates :date_start, presence: true
     validates :date_end, presence: true
 
@@ -86,9 +84,8 @@ To instantiate commands you can use `.new` or helper method `.with`, that receiv
 
 ```ruby
 ScheduleMeeting.with(
-    description: 'Annual planning',
-    location: 'Meeting room 2C',
     meeting_room_uuid: '4bb0a8a0-9234-477d-8df4-5f10a2fb1faa',
+    description: 'Annual planning',
     date_start: Time.mktime(2017, 12, 15, 14, 0, 0),
     date_end: Time.mktime(2017, 12, 15, 18, 0, 0)
 )
@@ -162,7 +159,77 @@ meeting_room = repository.load(MeetingRoom, command.meeting_room_uuid)
 
 ### Aggregates
 
-TODO
+Aggregates contain your business logic, rules between multiple entities are kept by them. Aggregates are all about the transaction consistency.
+
+To define them, include `Lieutenant::Aggregate` into your class. When defining it's initializer, you'll need to also setup the instance, calling `#setup(id)`, where `id` is the identifier of the aggregates' instance (`SecureRandom.uuid` is encouraged).
+
+```ruby
+class MeetingRoom
+    include Lieutenant::Aggregate
+
+    def initialize(name)
+        setup(SecureRandom.uuid)
+    end
+end
+```
+
+Aggregates' state should only be modified by events, that can be applied using `#apply`, that will instantiate the event with provided params and fire them to aggregate's internal handlers (registered with `.on`):
+
+```ruby
+class MeetingRoom
+    include Lieutenant::Aggregate
+
+    def initialize(name)
+        setup(SecureRandom.uuid)
+        apply(MeetingRoomCreated, name: name)
+    end
+
+    on(MeetingRoomCreated) do |event|
+        @name = event.name
+    end
+end
+```
+
+To allow command handlers to modify aggregates, you can define handlers that also handles your business logic or throw errors:
+
+```ruby
+class MeetingRoom
+    include Lieutenant::Aggregate
+
+    def initialize(name)
+        setup(SecureRandom.uuid)
+        apply(MeetingRoomCreated, name: name)
+    end
+
+    def schedule_meeting(description, date_start, date_end)
+        # Check if meeting room is available to needed dates
+
+        raise(MeetingRoomNotAvailable) unless room_available
+
+        apply(
+            MeetingScheduled,
+            description: description,
+            date_start: date_start,
+            date_end: date_end
+        )
+    end
+
+    on(MeetingRoomCreated) do |event|
+        @name = event.name
+        @meetings = []
+    end
+
+    on(MeetingScheduled) do |event|
+        # Note that we could push a PORO instead of a Hash
+        # (and it wouldn't be a Lieutenant::Aggregate)
+        @meetings.push({
+            description: event.description,
+            date_start: event.date_start,
+            date_end: event.date_end
+        })
+    end
+end
+```
 
 
 ### Events
