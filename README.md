@@ -50,6 +50,7 @@ By now, Lieutenant offer the components listed below. With each one, there's a d
 - [Events](#events)
 - [Event Store](#event-store)
 - [Event Bus](#event-bus)
+- [Configuration](#configuration)
 
 ### Commands
 
@@ -92,7 +93,21 @@ ScheduleMeeting.with(
 
 ### Command Sender
 
-TODO
+Command sender is the component that receives commands and forward them to the right handlers. It also instantiate the aggregate repository's unit of work, in order to help persistence to save only the generated events in each command handling.
+
+You can access the command sender throught Lieutenant's config:
+
+```ruby
+Lieutenant.config.command_sender
+```
+
+It dependes on all the configuration components, so be sure to config them before calling it. See [Configuration](#configuration).
+
+Once with the Command Sender, dispatch events by using `#dispatch` (aliased as `#call`):
+
+```ruby
+Lieutenant.config.command_sender.dispatch(command)
+```
 
 
 ### Command Handlers
@@ -121,6 +136,11 @@ TODO
 
 
 ### Event Bus
+
+TODO
+
+
+### Configuration
 
 TODO
 
