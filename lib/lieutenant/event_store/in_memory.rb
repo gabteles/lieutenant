@@ -5,22 +5,27 @@ module Lieutenant
     # Memory implementation of the event store. Stores events while the application is running
     class InMemory
       def initialize
-        @store = {}
+        @store = []
+        @index = {}
       end
 
       def persist(events)
-        events.each { |event| (store[event.aggregate_id] ||= []).push(event) }
+        events.each do |event|
+          (index[event.aggregate_id] ||= []).push(store.size)
+          store.push(event)
+        end
       end
 
       def event_stream_for(aggregate_id)
-        events = store[aggregate_id]
-        return nil unless events
+        aggregate_stream = index[aggregate_id]
+        return nil unless aggregate_stream
+        events = aggregate_stream.lazy.map(&store.method(:[]))
         Enumerator.new { |yielder| events.each(&yielder.method(:<<)) }
       end
 
       def aggregate_sequence_number(aggregate_id)
-        return -1 unless store.key?(aggregate_id)
-        store[aggregate_id].last.sequence_number
+        return -1 unless index.key?(aggregate_id)
+        store[index[aggregate_id].last].sequence_number
       end
 
       def transaction
@@ -30,7 +35,7 @@ module Lieutenant
 
       private
 
-      attr_reader :store
+      attr_reader :store, :index
     end
   end
 end
