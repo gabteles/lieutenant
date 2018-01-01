@@ -3,10 +3,8 @@
 module Lieutenant
   # Manages configuration
   class Config
-    # :reek:BooleanParameter
-    def event_bus(implementation = false)
-      return @event_bus = implementation if implementation
-      @event_bus ||= EventBus::InMemory.new
+    def event_bus
+      @event_bus ||= EventBus.new
     end
 
     # :reek:BooleanParameter

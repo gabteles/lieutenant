@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Lieutenant::EventBus::InMemory do
+RSpec.describe Lieutenant::EventBus do
   let(:instance) { described_class.new }
 
   describe '.new' do

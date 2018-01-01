@@ -12,8 +12,6 @@ Lieutenant is a toolkit that implements various of the components of Command & Q
 
 This gem aims to be most independent as possible of your tecnological choices: it should work with Rails, Sinatra, pure Rack apps or whatever you want.
 
-Not limited to the framework, you can also pick one of the event bus and/or event store that meets your needs, In Memory implementation of event bus, for example, can be the first step to start moving from the big monolith into some kind of distributed behaviour, until you get confident to replace it by some AWS SQS or Kafka implementation of the event bus.
-
 If you are not familiarized, you may check this references:
 
 - [CQRS Journey](https://msdn.microsoft.com/en-us/library/jj554200.aspx)
@@ -262,7 +260,7 @@ You need to set what implementation will be used, them Lieutenant will do the ma
 
 ### Event Bus
 
-The event bus publishes and receives messages from the aggregates updates. As event stores, you should only worry about setting the needed implementation.
+The event bus publishes and receives messages from the aggregates updates.
 
 You can also listen to it's events by subscribing to them:
 
@@ -275,17 +273,15 @@ end
 
 ### Configuration
 
-Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementations.
+Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementation of event store.
 
 ```ruby
 Lieutenant.config do |configuration|
-    configuration.event_bus(Lieutenant::EventBus::InMemory)
     configuration.event_store(Lieutenant::EventStore::InMemory)
 end
 
 # OR
 
-Lieutenant.config.event_bus(Lieutenant::EventBus::InMemory)
 Lieutenant.config.event_store(Lieutenant::EventStore::InMemory)
 ```
 
@@ -293,7 +289,7 @@ You can also access configuration the same way:
 
 ```ruby
 Lieutenant.config do |configuration|
-    configuration.event_bus # => Lieutenant::EventBus::InMemory
+    configuration.event_bus # => Lieutenant::EventBus
     configuration.event_store # => Lieutenant::EventStore::InMemory
     configuration.aggregate_repository # => Lieutentant::AggregateRepository
     configuration.command_sender # => Lieutenant::CommandSender
@@ -301,7 +297,7 @@ end
 
 # OR
 
-Lieutenant.config.event_bus # => Lieutenant::EventBus::InMemory
+Lieutenant.config.event_bus # => Lieutenant::EventBus
 Lieutenant.config.event_store # => Lieutenant::EventStore::InMemory
 Lieutenant.config.aggregate_repository # => Lieutentant::AggregateRepository
 Lieutenant.config.command_sender # => Lieutenant::CommandSender
