@@ -308,12 +308,12 @@ Lieutenant.config.command_sender # => Lieutenant::CommandSender
 In order to give some directions to the development of this gem, the roadmap below presents in a large picture of the plans to the future (more or less ordered).
 
 - Projections
+- Sagas
+- Command retry policies
 - Better documentation
 - Command filters
-- Command retry policies
-- Sagas
 - More implementations of event store
-- More implementations of event bus
+- Event bus hooks/filters
 
 ## Development
 
