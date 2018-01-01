@@ -12,7 +12,7 @@ RSpec.describe Lieutenant::CommandHandler do
   describe '.on' do
     subject { base_class.on(command_class, &block) }
     let(:command_class) { double(:command_class) }
-    let(:block) { ->() {} }
+    let(:block) { -> {} }
 
     it 'registers to command sender' do
       expect(Lieutenant.config.command_sender).to receive(:register).with(command_class, block)

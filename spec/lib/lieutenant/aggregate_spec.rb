@@ -35,7 +35,7 @@ RSpec.describe Lieutenant::Aggregate do
     let(:event_subclass_b) { event_subclass_a.clone }
     let(:not_event_subclass) { Class.new {} }
     let(:event_classes) { [event_subclass_a] }
-    let(:handler) { ->() {} }
+    let(:handler) { -> {} }
 
     it 'does not raise exceptions' do
       expect { subject }.to_not raise_error
@@ -51,7 +51,7 @@ RSpec.describe Lieutenant::Aggregate do
 
     context 'when subscribing with different handlers to same event class' do
       before { base_class.on(*event_classes, &handler_b) }
-      let(:handler_b) { ->() {} }
+      let(:handler_b) { -> {} }
 
       it 'does not raise exceptions' do
         expect { subject }.to_not raise_error
@@ -77,7 +77,7 @@ RSpec.describe Lieutenant::Aggregate do
     end
 
     context 'when event class has registered handlers' do
-      let(:handler) { ->() {} }
+      let(:handler) { -> {} }
 
       before do
         allow(event_class).to receive(:<).and_return(true)

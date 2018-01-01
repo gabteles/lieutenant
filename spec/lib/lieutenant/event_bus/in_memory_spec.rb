@@ -14,7 +14,7 @@ RSpec.describe Lieutenant::EventBus::InMemory do
   describe '#subscribe' do
     subject { instance.subscribe(*event_classes, &handler) }
     let(:event_classes) { [double(:event_class_a)] }
-    let(:handler) { ->() {} }
+    let(:handler) { -> {} }
 
     it 'does not raise exceptions' do
       expect { subject }.to_not raise_error
@@ -22,7 +22,7 @@ RSpec.describe Lieutenant::EventBus::InMemory do
 
     context 'when subscribing with different handlers to same event class' do
       before { instance.subscribe(*event_classes, &handler_b) }
-      let(:handler_b) { ->() {} }
+      let(:handler_b) { -> {} }
 
       it 'does not raise exceptions' do
         expect { subject }.to_not raise_error
@@ -46,7 +46,7 @@ RSpec.describe Lieutenant::EventBus::InMemory do
 
     context 'when there are no registered subscribers to the event class' do
       before { instance.subscribe(event_class_b, &handler) }
-      let(:handler) { ->() {} }
+      let(:handler) { -> {} }
 
       it 'does not call other handlers' do
         expect(handler).to_not receive(:call)

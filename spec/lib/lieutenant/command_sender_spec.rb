@@ -51,7 +51,7 @@ RSpec.describe Lieutenant::CommandSender do
   describe '#register' do
     subject { instance.register(command_class, handler) }
     let(:command_class) { double(:command_class) }
-    let(:handler) { ->() {} }
+    let(:handler) { -> {} }
 
     it 'does not raises exception' do
       expect { subject }.to_not raise_error
