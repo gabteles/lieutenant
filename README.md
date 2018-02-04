@@ -48,6 +48,7 @@ By now, Lieutenant offer the components listed below. With each one, there's a d
 - [Events](#events)
 - [Event Store](#event-store)
 - [Event Bus](#event-bus)
+- [Projections](#projections)
 - [Configuration](#configuration)
 
 ### Commands
@@ -271,6 +272,37 @@ end
 ```
 
 
+### Projections
+
+The Projections listens to events it is interested in and updates read models
+as needed. It means that they maintain the *current* state of the data.  To use
+it, just include `Lieutenant::Projection`.
+
+```ruby
+module MeetingRoomProjection
+  include Lieutenant::Projection
+
+  on(MeetingRoomCreated) do |event|
+    MeetingRoomRecord.create!(
+      uuid: event.aggregate_id,
+      name: event.name,
+      meetings: []
+    )
+  end
+
+  on(MeetingScheduled) do |event|
+    meeting_room = MeetingRoomRecord.find(event.aggregate_id)
+    meeting_room.meetings.push({
+      description: event.description,
+      date_start: event.date_start,
+      date_end: event.date_end
+    })
+    meeting_room.save!
+  end
+end
+```
+
+
 ### Configuration
 
 Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementation of event store.
@@ -307,13 +339,11 @@ Lieutenant.config.command_sender # => Lieutenant::CommandSender
 
 In order to give some directions to the development of this gem, the roadmap below presents in a large picture of the plans to the future (more or less ordered).
 
-- Projections
-- Sagas
 - Command retry policies
-- Better documentation
-- Command filters
 - More implementations of event store
-- Event bus hooks/filters
+- Sagas
+- Command filters
+- Better documentation
 
 ## Development
 
