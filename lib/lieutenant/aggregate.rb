@@ -46,12 +46,8 @@ module Lieutenant
     protected
 
     def apply(event_class, **params)
-      event = event_class.with(
-        **params,
-        aggregate_id: @id,
-        sequence_number: @version + uncommitted_events.size + 1
-      )
-
+      event = event_class.with(**params)
+      event.setup(@id, @version + uncommitted_events.size + 1)
       internal_apply(event)
       uncommitted_events << event
     end

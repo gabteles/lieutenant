@@ -110,17 +110,10 @@ RSpec.describe Lieutenant::Aggregate do
     end
 
     context 'when there are uncommited events' do
-      let(:mock_event_class) { double(:event_class) }
-      let(:event) { double(:event, valid?: true) }
-
-      before do
-        allow(mock_event_class).to receive(:with).and_return(event)
-        instance.send(:apply, mock_event_class)
-        instance.send(:apply, mock_event_class)
-      end
+      before { instance.send(:apply, TestEvent) }
 
       it 'increases the version' do
-        expect { subject }.to change(instance, :version).from(-1).to(1)
+        expect { subject }.to change(instance, :version).from(-1).to(0)
       end
 
       it 'does clear uncommited events' do
@@ -131,23 +124,22 @@ RSpec.describe Lieutenant::Aggregate do
 
   describe '#apply' do
     let(:instance) { base_class.new }
-    subject { instance.send(:apply, event_class, **params) }
-    let(:event_class) { double(:event_class) }
-    let(:event) { double(:event, valid?: true) }
+    subject { instance.send(:apply, TestEvent, **params) }
+    let(:event) { TestEvent.new }
     let(:params) { { foo: :bar } }
 
     before do
       instance.send(:setup, 1)
-      allow(event_class).to receive(:with).and_return(event)
+      allow(TestEvent).to receive(:with).and_return(event)
     end
 
     it "instantiates event with `.with' method on event class" do
-      expect(event_class).to receive(:with).with(hash_including(params)).and_return(event)
+      expect(TestEvent).to receive(:with).with(hash_including(params)).and_return(event)
       subject
     end
 
-    it 'includes id and version to created events' do
-      expect(event_class).to receive(:with).with(hash_including(aggregate_id: instance.id, sequence_number: 0))
+    it 'setups created events' do
+      expect_any_instance_of(TestEvent).to receive(:setup).with(1, 0)
       subject
     end
 
