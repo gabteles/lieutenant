@@ -13,10 +13,8 @@ module Lieutenant
     def save_events(aggregate_id, events, expected_version)
       raise(Exception::ConcurrencyConflict) if store.aggregate_sequence_number(aggregate_id) != expected_version
 
-      PREPARE_EVENTS[aggregate_id, events, expected_version].tap do |final_events|
-        store.persist(final_events)
-        final_events.each(&event_bus.method(:publish))
-      end
+      store.persist(events)
+      events.each(&event_bus.method(:publish))
     end
 
     def event_stream_for(aggregate_id)
@@ -31,14 +29,5 @@ module Lieutenant
 
     attr_reader :store
     attr_reader :event_bus
-
-    PREPARE_EVENTS = lambda do |aggregate_id, events, sequence_number|
-      events.lazy.with_index.map do |event, idx|
-        event.prepare(aggregate_id, sequence_number + idx + 1)
-        event
-      end
-    end
-
-    private_constant :PREPARE_EVENTS
   end
 end

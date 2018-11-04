@@ -142,7 +142,12 @@ RSpec.describe Lieutenant::Aggregate do
     end
 
     it "instantiates event with `.with' method on event class" do
-      expect(event_class).to receive(:with).with(params).and_return(event)
+      expect(event_class).to receive(:with).with(hash_including(params)).and_return(event)
+      subject
+    end
+
+    it 'includes id and version to created events' do
+      expect(event_class).to receive(:with).with(hash_including(aggregate_id: instance.id, sequence_number: 0))
       subject
     end
 

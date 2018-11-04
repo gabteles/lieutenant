@@ -9,11 +9,6 @@ module Lieutenant
       end
     end
 
-    attr_reader :aggregate_id, :sequence_number
-
-    def prepare(aggregate_id, sequence_number)
-      @aggregate_id = aggregate_id
-      @sequence_number = sequence_number
-    end
+    attr_accessor :aggregate_id, :sequence_number
   end
 end

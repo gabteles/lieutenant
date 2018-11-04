@@ -23,15 +23,7 @@ RSpec.describe Lieutenant::EventStore do
     before do
       allow(store).to receive(:aggregate_sequence_number).and_return(expected_version)
       allow(store).to receive(:persist)
-      allow(event_a).to receive(:prepare)
-      allow(event_b).to receive(:prepare)
       allow(event_bus).to receive(:publish)
-    end
-
-    it 'prepares each event to persist' do
-      expect(event_a).to receive(:prepare).with(aggregage_id, 0)
-      expect(event_b).to receive(:prepare).with(aggregage_id, 1)
-      subject
     end
 
     it 'persists events by passing them to store' do
