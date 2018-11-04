@@ -6,6 +6,8 @@ require 'coveralls'
 Coveralls.wear!
 require 'simplecov'
 
+Bundler.require(:test)
+
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
@@ -16,6 +18,8 @@ SimpleCov.start do
 end
 
 require 'lieutenant'
+
+Dir['spec/helpers/**/*.rb'].each { |file| require(File.expand_path(file)) }
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_status'
