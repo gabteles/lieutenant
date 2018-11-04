@@ -10,6 +10,7 @@ module Lieutenant
       @event_bus = event_bus
     end
 
+    # :reek:ControlParameter
     def save_events(aggregate_id, events, expected_version)
       raise(Exception::ConcurrencyConflict) if store.aggregate_sequence_number(aggregate_id) != expected_version
 
