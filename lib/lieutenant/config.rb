@@ -3,16 +3,28 @@
 module Lieutenant
   # Manages configuration
   class Config
-    # :reek:BooleanParameter
-    def event_bus(implementation = false)
-      @event_bus ||= implementation || EventBus::InMemory.new
+    def initialize
+      @event_store = nil
     end
 
-    # :reek:BooleanParameter
-    def event_store(implementation = false)
-      return @event_store_implementation = implementation if implementation
-      @event_store_implementation ||= EventStore::InMemory
-      @event_store ||= EventStore.new(@event_store_implementation, event_bus)
+    # :reek:Attribute
+    attr_writer :event_bus
+
+    def event_store_persistence=(implementation)
+      raise "Cannot change event store's persistence after event store is initialized" if @event_store
+      @event_store_persistence = implementation
+    end
+
+    def event_bus
+      @event_bus ||= EventBus::InMemory.new
+    end
+
+    def event_store_persistence
+      @event_store_persistence ||= EventStore::InMemory.new
+    end
+
+    def event_store
+      @event_store ||= EventStore.new(event_store_persistence, event_bus)
     end
 
     def aggregate_repository

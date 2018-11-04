@@ -16,7 +16,7 @@ module Lieutenant
   autoload :EventStore,          'lieutenant/event_store'
   autoload :Exception,           'lieutenant/exception'
   autoload :Message,             'lieutenant/message'
-  autoload :Projection,          'lieutenant/projection'
+  autoload :Projector,           'lieutenant/projector'
   autoload :VERSION,             'lieutenant/version'
 
   module_function
