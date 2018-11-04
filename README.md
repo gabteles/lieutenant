@@ -305,11 +305,12 @@ end
 
 ### Configuration
 
-Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementation of event store.
+Lieutenant's configuration can be modified by using an structured or block way. By default, it uses InMemory implementation of event store and bus.
 
 ```ruby
 Lieutenant.config do |configuration|
-    configuration.event_store(Lieutenant::EventStore::InMemory)
+    configuration.event_bus(Lieutenant::EventBus::InMemory.new)
+                 .event_store(Lieutenant::EventStore::InMemory)
 end
 
 # OR
