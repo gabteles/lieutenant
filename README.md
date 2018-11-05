@@ -4,7 +4,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/lieutenant.svg)](https://badge.fury.io/rb/lieutenant)
 [![Build Status](https://travis-ci.org/gabteles/lieutenant.svg?branch=master)](https://travis-ci.org/gabteles/lieutenant)
-[![Coverage Status](https://coveralls.io/repos/github/gabteles/lieutenant/badge.svg?branch=master)](https://coveralls.io/github/gabteles/lieutenant?branch=master)
+[![Build Status](https://semaphoreci.com/api/v1/gabrielteles/lieutenant/branches/master/badge.svg)](https://semaphoreci.com/gabrielteles/lieutenant)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c96a6dd822547e657829/maintainability)](https://codeclimate.com/github/gabteles/lieutenant/maintainability)
 
 
