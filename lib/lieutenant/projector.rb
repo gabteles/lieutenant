@@ -6,7 +6,8 @@ module Lieutenant
   #   class FooProjector
   #     include Lieutenant::Projector
   #
-  #     on CreatedBarEvent do |event|
+  #     on CreatedBarEvent do
+  #        # `event` is accessible
   #        # ...
   #     end
   #
@@ -21,7 +22,6 @@ module Lieutenant
     def self.included(base)
       base.class_eval do
         extend Lieutenant::Projector::ClassMethods
-        # TODO: Register classes including this
       end
     end
 
@@ -44,14 +44,16 @@ module Lieutenant
       instance_exec(&effect)
     end
 
-    private
-
-    attr_reader :event, :projector_config
-
     def initialize_projector(config = Lieutenant.config)
       @projector_config = config
       subscribe_to_events
     end
+
+    alias initialize initialize_projector unless method_defined? :initialize
+
+    private
+
+    attr_reader :event, :projector_config
 
     def subscribe_to_events
       self.class.subscriptions.each do |event_classes:, **kwargs|
