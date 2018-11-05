@@ -34,7 +34,7 @@ RSpec.describe Lieutenant::Projector do
     end
 
     context 'when called with method parameter' do
-      before { base_class.on(TestEvent, to: :dummy) }
+      before { base_class.on(TestEvent, handler: :dummy) }
 
       it_behaves_like 'subscribing to event bus when initialize new instances'
 

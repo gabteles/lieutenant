@@ -10,12 +10,34 @@ module Lieutenant
   #        # `event` is accessible
   #        # ...
   #     end
+  #   end
   #
-  #     on DeletedBarEvent, to: :handle_delete
+  # Methods can also be used in order to improve legibility:
+  #
+  #   class FooProjector
+  #     include Lieutenant::Projector
+  #
+  #     on DeletedBarEvent, handler: :handle_delete
   #
   #     def handle_delete
   #       # `event` is accessible
   #       # ...
+  #     end
+  #   end
+  #
+  # By default Lieutenant::Projector defines +initialize+ method, receiving the
+  # configuration, that it will use to find desired event bus to subscribe.
+  # If overriding this method is necessary, there's +initialize_projector+
+  # method that can be called in order to do this job, as shown:
+  #
+  #   class FooProjector
+  #     include Lieutenant::Projector
+  #
+  #     def initialize(needed_parameter)
+  #       @needed_parameter = needed_parameter
+  #       initialize_projector # assumes that this class will always use default
+  #                            # lieutenant configuration since we're passing no
+  #                            # parameters to `initialize_projector`
   #     end
   #   end
   module Projector
@@ -27,8 +49,8 @@ module Lieutenant
 
     # Define common class methods to projectors
     module ClassMethods
-      def on(*event_classes, to: nil, &block)
-        subscriptions << { event_classes: event_classes, to: to, block: block }
+      def on(*event_classes, handler: nil, &block)
+        subscriptions << { event_classes: event_classes, handler: handler, block: block }
       end
 
       def subscriptions
@@ -38,9 +60,9 @@ module Lieutenant
 
     protected
 
-    def handle_event(event, to:, block:)
+    def handle_event(event, handler:, block:)
       @event = event
-      effect = to ? method(to) : block
+      effect = handler ? method(handler) : block
       instance_exec(&effect)
     end
 
