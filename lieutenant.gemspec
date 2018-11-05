@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 lib = File.expand_path('../lib', __FILE__)
@@ -7,7 +6,7 @@ require 'lieutenant/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'lieutenant'
-  spec.version       = Lieutenant::VERSION
+  spec.version       = "#{Lieutenant::VERSION}#{ENV['GEM_VERSION_SUFFIX']}"
   spec.authors       = ['Gabriel Teles']
   spec.email         = ['gab.teles@hotmail.com']
 

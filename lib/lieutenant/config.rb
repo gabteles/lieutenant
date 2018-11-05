@@ -12,6 +12,7 @@ module Lieutenant
 
     def event_store_persistence=(implementation)
       raise "Cannot change event store's persistence after event store is initialized" if @event_store
+
       @event_store_persistence = implementation
     end
 

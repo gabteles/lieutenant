@@ -19,12 +19,14 @@ module Lieutenant
       def event_stream_for(aggregate_id)
         aggregate_stream = index[aggregate_id]
         return nil unless aggregate_stream
+
         events = aggregate_stream.lazy.map(&store.method(:[]))
         Enumerator.new { |yielder| events.each(&yielder.method(:<<)) }
       end
 
       def aggregate_sequence_number(aggregate_id)
         return -1 unless index.key?(aggregate_id)
+
         store[index[aggregate_id].last].sequence_number
       end
 
