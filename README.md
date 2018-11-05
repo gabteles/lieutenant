@@ -48,7 +48,7 @@ By now, Lieutenant offer the components listed below. With each one, there's a d
 - [Events](#events)
 - [Event Store](#event-store)
 - [Event Bus](#event-bus)
-- [Projections](#projections)
+- [Projectors](#projectors)
 - [Configuration](#configuration)
 
 ### Commands
@@ -100,7 +100,7 @@ You can access the command sender throught Lieutenant's config:
 Lieutenant.config.command_sender
 ```
 
-It dependes on all the configuration components, so be sure to config them before calling it. See [Configuration](#configuration).
+It depends on all the configuration components, so be sure to config them before calling it. See [Configuration](#configuration).
 
 Once with the Command Sender, dispatch events by using `#dispatch` (aliased as `#call`):
 
@@ -237,7 +237,7 @@ For the same reason of the command handlers, aggregates should not have side-eff
 
 Events register what happened with aggregates since they were created. They have same features as `Commands`: you can use ActiveModel Validations and instantiate them using `#with` method.
 
-Events exposes `aggregate_id` and `sequence_number`, that are used to know to which aggregate each event belongs to and it's order into the event stream. You should not worry about them, we use them internally ;)
+Events exposes `aggregate_id` and `sequence_number`, that are used to know to which aggregate each event belongs to and it's order in the event stream. You should not worry about them, we use them internally ;)
 
 ```ruby
 class MeetingScheduled
@@ -247,8 +247,8 @@ class MeetingScheduled
     attr_accessor :date_start
     attr_accessor :date_end
     # Implicity defined:
-    # attr_accessor :aggregate_id (Meeting room's UUID)
-    # attr_accessor :sequence_number
+    # attr_reader :aggregate_id (Meeting room's UUID)
+    # attr_reader :sequence_number
 end
 ```
 
@@ -272,17 +272,17 @@ end
 ```
 
 
-### Projections
+### Projectors
 
-The Projections listens to events it is interested in and updates read models
+The Projectors listens to events it is interested in and updates read models
 as needed. It means that they maintain the *current* state of the data.  To use
-it, just include `Lieutenant::Projection`.
+it, just include `Lieutenant::Projector`.
 
 ```ruby
-module MeetingRoomProjection
-  include Lieutenant::Projection
+module MeetingRoomProjector
+  include Lieutenant::Projector
 
-  on(MeetingRoomCreated) do |event|
+  on(MeetingRoomCreated) do
     MeetingRoomRecord.create!(
       uuid: event.aggregate_id,
       name: event.name,
@@ -290,14 +290,21 @@ module MeetingRoomProjection
     )
   end
 
-  on(MeetingScheduled) do |event|
+  # Also allows defining method handlers
+  on MeetingScheduled, handler: :meeting_scheduled
+
+  def meeting_scheduled
     meeting_room = MeetingRoomRecord.find(event.aggregate_id)
-    meeting_room.meetings.push({
+    meeting_room.meetings.create!(
       description: event.description,
       date_start: event.date_start,
       date_end: event.date_end
-    })
-    meeting_room.save!
+    )
+  end
+
+  # Listening to multiple events at same time
+  on(MeetingRoomCreated, MeetingScheduled) do
+    puts "Meeting event received: #{event}"
   end
 end
 ```
@@ -309,13 +316,14 @@ Lieutenant's configuration can be modified by using an structured or block way. 
 
 ```ruby
 Lieutenant.config do |configuration|
-    configuration.event_bus(Lieutenant::EventBus::InMemory.new)
-                 .event_store(Lieutenant::EventStore::InMemory)
+    configuration.event_bus = Lieutenant::EventBus::InMemory.new
+    configuration.event_store_persistence = Lieutenant::EventStore::InMemory.new
 end
 
 # OR
 
-Lieutenant.config.event_store(Lieutenant::EventStore::InMemory)
+Lieutenant.config.event_bus = Lieutenant::EventBus::InMemory.new
+Lieutenant.config.event_store_persistence = Lieutenant::EventStore::InMemory.new
 ```
 
 You can also access configuration the same way:
@@ -323,6 +331,7 @@ You can also access configuration the same way:
 ```ruby
 Lieutenant.config do |configuration|
     configuration.event_bus # => Lieutenant::EventBus
+    configuration.event_store_persistence # => Lieutenant::EventStore::InMemory
     configuration.event_store # => Lieutenant::EventStore::InMemory
     configuration.aggregate_repository # => Lieutentant::AggregateRepository
     configuration.command_sender # => Lieutenant::CommandSender
@@ -331,6 +340,7 @@ end
 # OR
 
 Lieutenant.config.event_bus # => Lieutenant::EventBus
+Lieutenant.config.event_store_persistence # => Lieutenant::EventStore::InMemory
 Lieutenant.config.event_store # => Lieutenant::EventStore::InMemory
 Lieutenant.config.aggregate_repository # => Lieutentant::AggregateRepository
 Lieutenant.config.command_sender # => Lieutenant::CommandSender
@@ -341,10 +351,13 @@ Lieutenant.config.command_sender # => Lieutenant::CommandSender
 In order to give some directions to the development of this gem, the roadmap below presents in a large picture of the plans to the future (more or less ordered).
 
 - Command retry policies
-- More implementations of event store
-- Sagas
 - Command filters
 - Better documentation
+- More implementations of event bus
+- More implementations of event store
+- Demo application
+- Migrations
+- Sagas
 
 ## Development
 
